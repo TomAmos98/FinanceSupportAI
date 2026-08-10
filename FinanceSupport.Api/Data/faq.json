@@ -1,0 +1,17 @@
+﻿[
+  {
+    "title": "Avgifter",
+    "keywords": ["avgift", "avgifter", "kostnad", "pris"],
+    "content": "Företagets avgifter beror på vilken tjänst kunden använder. Kunden ska hänvisas till den aktuella prislistan eller kundservice om exakt avgift inte framgår."
+  },
+  {
+    "title": "Kontakt med kundservice",
+    "keywords": ["kontakt", "kundservice", "support", "hjälp"],
+    "content": "Kunden kan kontakta kundservice när chatbotten inte kan besvara frågan eller när ärendet gäller personlig eller känslig information."
+  },
+  {
+    "title": "Personliga ekonomiska ärenden",
+    "keywords": ["lån", "kredit", "inkomst", "ekonomi", "konto"],
+    "content": "Chatbotten ska inte fatta ekonomiska beslut eller bedöma en enskild kunds ekonomi. Sådana frågor ska alltid lämnas över till mänsklig kundservice."
+  }
+]
