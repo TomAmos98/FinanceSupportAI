@@ -6,3 +6,13 @@ Content-Type: application/json
 }
 
 ###
+
+### Test - okänd fråga
+POST http://localhost:5214/api/chat
+Content-Type: application/json
+
+{
+  "message": "Vad blir vädret imorgon?"
+}
+
+###

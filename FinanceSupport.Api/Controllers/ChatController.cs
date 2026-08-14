@@ -9,14 +9,19 @@ namespace FinanceSupport.Api.Controllers;
 public class ChatController : ControllerBase
 {
     private readonly KnowledgeService _knowledgeService;
+    private readonly AiService _aiService;
 
-    public ChatController(KnowledgeService knowledgeService)
+    public ChatController(
+        KnowledgeService knowledgeService,
+        AiService aiService)
     {
         _knowledgeService = knowledgeService;
+        _aiService = aiService;
     }
 
     [HttpPost]
-    public ActionResult<ChatResponse> Ask([FromBody] ChatRequest request)
+    public async Task<ActionResult<ChatResponse>> Ask(
+        [FromBody] ChatRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Message))
         {
@@ -28,7 +33,8 @@ public class ChatController : ControllerBase
             });
         }
 
-        var faqItem = _knowledgeService.FindRelevantInformation(request.Message);
+        var faqItem =
+            _knowledgeService.FindRelevantInformation(request.Message);
 
         if (faqItem is null)
         {
@@ -40,9 +46,13 @@ public class ChatController : ControllerBase
             });
         }
 
+        var aiAnswer = await _aiService.GenerateAnswerAsync(
+            request.Message,
+            faqItem.Content);
+
         return Ok(new ChatResponse
         {
-            Answer = faqItem.Content,
+            Answer = aiAnswer,
             Source = faqItem.Title,
             Escalated = false
         });

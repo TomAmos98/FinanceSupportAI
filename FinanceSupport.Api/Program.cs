@@ -7,6 +7,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<KnowledgeService>();
+builder.Services.AddSingleton<AiService>();
 
 var app = builder.Build();
 
