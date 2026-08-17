@@ -8,6 +8,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<KnowledgeService>();
 builder.Services.AddSingleton<AiService>();
+builder.Services.AddSingleton<TicketService>();
 
 var app = builder.Build();
 

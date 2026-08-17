@@ -25,35 +25,43 @@ public class AiService
         string question,
         string context)
     {
-        List<ChatMessage> messages =
-        [
-            new SystemChatMessage(
-                """
-                Du är en kundserviceassistent för ett företag inom finans.
+        try
+        {
+            List<ChatMessage> messages =
+            [
+                new SystemChatMessage(
+                    """
+                    Du är en kundserviceassistent för ett företag inom finans.
 
-                Svara endast utifrån informationen som finns i underlaget.
-                Hitta inte på information.
-                Om underlaget inte räcker för att besvara frågan ska du säga
-                att kunden behöver kontakta kundservice.
+                    Svara endast utifrån informationen som finns i underlaget.
+                    Hitta inte på information.
 
-                Ge korta, tydliga och professionella svar på svenska.
-                """
-            ),
+                    Om underlaget inte räcker för att besvara frågan ska du säga
+                    att kunden behöver kontakta kundservice.
 
-            new UserChatMessage(
-                $"""
-                 Underlag:
-                 {context}
+                    Ge korta, tydliga och professionella svar på svenska.
+                    """
+                ),
 
-                 Kundens fråga:
-                 {question}
-                 """
-            )
-        ];
+                new UserChatMessage(
+                    $"""
+                     Underlag:
+                     {context}
 
-        ChatCompletion completion =
-            await _chatClient.CompleteChatAsync(messages);
+                     Kundens fråga:
+                     {question}
+                     """
+                )
+            ];
 
-        return completion.Content[0].Text;
+            ChatCompletion completion =
+                await _chatClient.CompleteChatAsync(messages);
+
+            return completion.Content[0].Text;
+        }
+        catch (Exception)
+        {
+            return context;
+        }
     }
 }

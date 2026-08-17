@@ -10,13 +10,16 @@ public class ChatController : ControllerBase
 {
     private readonly KnowledgeService _knowledgeService;
     private readonly AiService _aiService;
+    private readonly TicketService _ticketService;
 
     public ChatController(
         KnowledgeService knowledgeService,
-        AiService aiService)
+        AiService aiService,
+        TicketService ticketService)
     {
         _knowledgeService = knowledgeService;
         _aiService = aiService;
+        _ticketService = ticketService;
     }
 
     [HttpPost]
@@ -38,9 +41,11 @@ public class ChatController : ControllerBase
 
         if (faqItem is null)
         {
+            _ticketService.CreateTicket(request.Message);
+
             return Ok(new ChatResponse
             {
-                Answer = "Jag kan inte besvara den frågan utifrån den information jag har. Kontakta kundservice för hjälp.",
+                Answer = "Jag kan inte besvara den frågan utifrån den information jag har. Ett supportärende har skapats och kundservice kan ta över.",
                 Source = null,
                 Escalated = true
             });
