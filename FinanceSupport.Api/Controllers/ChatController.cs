@@ -11,15 +11,18 @@ public class ChatController : ControllerBase
     private readonly KnowledgeService _knowledgeService;
     private readonly AiService _aiService;
     private readonly TicketService _ticketService;
+    private readonly N8nService _n8nService;
 
     public ChatController(
         KnowledgeService knowledgeService,
         AiService aiService,
-        TicketService ticketService)
+        TicketService ticketService,
+        N8nService n8nService)
     {
         _knowledgeService = knowledgeService;
         _aiService = aiService;
         _ticketService = ticketService;
+        _n8nService = n8nService;
     }
 
     [HttpPost]
@@ -42,6 +45,9 @@ public class ChatController : ControllerBase
         if (faqItem is null)
         {
             _ticketService.CreateTicket(request.Message);
+
+            await _n8nService.SendEscalatedQuestionAsync(
+                request.Message);
 
             return Ok(new ChatResponse
             {
