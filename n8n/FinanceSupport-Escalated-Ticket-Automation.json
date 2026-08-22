@@ -1,0 +1,332 @@
+{
+  "name": "FinanceSupport - Escalated Ticket Automation  Tryck Enter.",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bf5be0ce-9ac2-4ea2-9d34-8df248d1c1ef",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "33db1cfa-9a23-4beb-ac90-b570edd6cc8c",
+      "name": "Webhook",
+      "webhookId": "bf5be0ce-9ac2-4ea2-9d34-8df248d1c1ef"
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.body.question }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Betalning",
+              "description": "Frågor om betalningar, nekade betalningar och transaktioner"
+            },
+            {
+              "category": "Konto",
+              "description": "Frågor om konto, inloggning och kontoinställningar"
+            },
+            {
+              "category": "Lån ",
+              "description": "Frågor om lån, ränta och återbetalning"
+            },
+            {
+              "category": "Övrigt",
+              "description": "Endast frågor som INTE handlar om betalningar, konto eller lån."
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "Classify the user's text into exactly one category: {categories}.\n\nRules:\n- If the text mentions betalning, betala, nekad betalning, transaktion or köp -> Betalning\n- If the text mentions konto, login or inloggning -> Konto\n- If the text mentions lån, ränta or återbetalning -> Lån\n- Use Övrigt only when none of the other categories match.\n\nOnly output the required JSON. Do not explain.",
+          "enableAutoFixing": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "890a6544-5fa2-4963-a9d4-034f9620ea09",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "model": "=llama3.2:3b",
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        160,
+        208
+      ],
+      "id": "36f08eb5-9d3c-4836-bd82-4ce2a08b1a76",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "z1zjryjmFl3SENLk",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1127cd28-9ca5-4671-b422-0d92a17b2aa3",
+              "name": "category",
+              "value": "Betalning",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        592,
+        -208
+      ],
+      "id": "6cfcdb10-b0a1-46f3-b664-a5777da89d43",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "142e705f-d528-4191-bb2e-9f4af0db228e",
+              "name": "category",
+              "value": "Konto",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        592,
+        -96
+      ],
+      "id": "ca796849-6937-458d-9c55-cfea83615159",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "708aab8d-c622-4c37-bbb2-cf46fba717d0",
+              "name": "category",
+              "value": "Lån",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        592,
+        96
+      ],
+      "id": "1f07f466-2ea7-4d13-b414-789f26df26ba",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38cb95f2-8695-4b78-bdfb-cb8b88b4456b",
+              "name": "category",
+              "value": "Övrigt",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        592,
+        208
+      ],
+      "id": "26c5d659-2cb2-41ff-8658-334afaf8a9c0",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        816,
+        -208
+      ],
+      "id": "9594cdad-b816-4e81-80ef-6d21b182b10e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "00416e53-19da-4288-affd-db46e8c23bf7",
+              "name": "status",
+              "value": "Ready for customer service",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        720,
+        96
+      ],
+      "id": "1dadb1b9-b22e-4486-b7a5-43a9c9394b36",
+      "name": "Edit Fields4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8a4cceed-25e5-4f93-81cb-dd500f6bc36b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "afb64f9e2b8d3c30354dfc5c69303fe3811cfdf17c22ad232dfce3bcdd9d4403"
+  },
+  "nodeGroups": [],
+  "id": "RlfXHlaqpGxCp1G3",
+  "tags": []
+}

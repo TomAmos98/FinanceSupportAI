@@ -16,8 +16,49 @@ Content-Type: application/json
 }
 
 ###
+
 ### Hämta alla supportärenden
 GET http://localhost:5214/api/tickets
 Accept: application/json
+
+###
+
+### Test n8n - Betalning
+POST http://localhost:5678/webhook/bf5be0ce-9ac2-4ea2-9d34-8df248d1c1ef
+Content-Type: application/json
+
+{
+  "question": "Jag förstår inte varför min betalning nekades."
+}
+
+###
+
+### Test n8n - Konto
+POST http://localhost:5678/webhook/bf5be0ce-9ac2-4ea2-9d34-8df248d1c1ef
+Content-Type: application/json
+
+{
+  "question": "Jag kan inte logga in på mitt konto."
+}
+
+###
+
+### Test n8n - Lån
+POST http://localhost:5678/webhook/bf5be0ce-9ac2-4ea2-9d34-8df248d1c1ef
+Content-Type: application/json
+
+{
+  "question": "Hur mycket ränta betalar jag på mitt lån?"
+}
+
+###
+
+### Test n8n - Övrigt
+POST http://localhost:5678/webhook/bf5be0ce-9ac2-4ea2-9d34-8df248d1c1ef
+Content-Type: application/json
+
+{
+  "question": "Vilka öppettider har kundservice?"
+}
 
 ###
