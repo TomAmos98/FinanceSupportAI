@@ -33,7 +33,42 @@ I den nuvarande MVP:n begränsas risken eftersom AI-modellen inte har tillgång 
 - Lagra inte känsliga uppgifter i loggar eller supportärenden.
 - Begränsa AI-modellens åtkomst till interna system och databaser.
 
-### 4. Excessive Agency
+### 3. Supply Chain
+
+FinanceSupportAI använder externa paket och komponenter, exempelvis OpenAI SDK, n8n och Ollama. Sårbarheter eller manipulerade beroenden i dessa komponenter kan påverka lösningens säkerhet.
+
+Åtgärder:
+- Använd välkända och betrodda paketkällor.
+- Håll NuGet-paket, n8n och Ollama uppdaterade.
+- Granska beroenden och versionsändringar.
+- Undvik onödiga tredjepartsberoenden.
+- Lagra aldrig API-nycklar direkt i källkoden.
+
+### 4. Data and Model Poisoning
+
+En AI-lösning kan påverkas om träningsdata, kunskapsunderlag eller annan information som modellen använder manipuleras. Det kan leda till felaktiga eller avsiktligt missvisande svar.
+
+I FinanceSupportAI tränas ingen egen AI-modell. Däremot använder lösningen ett FAQ-underlag som måste vara korrekt och pålitligt. Om detta underlag manipuleras kan AI:n formulera svar baserade på felaktig information.
+
+Åtgärder:
+- Begränsa vilka personer och system som får ändra kunskapsunderlaget.
+- Granska och validera information innan den används av AI:n.
+- Versionshantera förändringar i kunskapsbasen.
+- Använd endast betrodda modeller och datakällor.
+
+### 5. Improper Output Handling
+
+AI-genererade svar kan innehålla felaktigt, oväntat eller olämpligt innehåll. Om AI-modellens output används direkt av andra delar av systemet utan kontroll kan detta skapa säkerhetsproblem.
+
+I FinanceSupportAI används AI främst för att formulera kundservicesvar utifrån information som redan har hittats i FAQ-underlaget. Okända frågor eskaleras till kundservice i stället för att AI:n får hitta på ett svar.
+
+Åtgärder:
+- Validera AI-modellens output innan den används av andra system.
+- Tillåt inte AI-genererad text att direkt utföra kommandon eller databasoperationer.
+- Begränsa svaren till information från det godkända underlaget.
+- Eskalera frågor när tillräckligt underlag saknas.
+
+### 6. Excessive Agency
 
 En AI-lösning kan innebära en säkerhetsrisk om modellen får för stora möjligheter att självständigt utföra åtgärder i andra system.
 
@@ -44,30 +79,6 @@ FinanceSupportAI begränsar denna risk genom att AI:n inte får genomföra betal
 - Kräv mänsklig kontroll för känsliga eller ekonomiska åtgärder.
 - Begränsa vilka externa system AI:n får kommunicera med.
 - Logga automatiserade åtgärder för spårbarhet.
-
-### 5. Misinformation
-
-En språkmodell kan generera svar som låter trovärdiga men som innehåller felaktig information. Inom finans kan detta få större konsekvenser eftersom kunder kan fatta ekonomiska beslut baserat på svaret.
-
-FinanceSupportAI minskar risken genom att först söka efter relevant information i KnowledgeService. AI-modellen används därefter för att formulera svaret utifrån det hittade underlaget. Om relevant information saknas eskaleras frågan till kundservice.
-
-Åtgärder:
-- Begränsa AI-svar till verifierat underlag.
-- Låt inte modellen hitta på saknade fakta.
-- Eskalera frågor när tillräcklig information saknas.
-- Använd mänsklig granskning för viktiga ekonomiska frågor.
-
-### 6. Unbounded Consumption
-
-AI-tjänster kan förbruka stora mängder resurser om användare kan skicka obegränsat antal frågor eller mycket stora inmatningar. Det kan leda till höga kostnader, långsamma svar eller överbelastning av systemet.
-
-I FinanceSupportAI är detta relevant både för AI-anrop i API:t och den lokala Ollama-modellen som används i n8n-automationen.
-
-Åtgärder:
-- Begränsa hur många förfrågningar en användare kan göra under en viss tidsperiod.
-- Begränsa maximal längd på användarens frågor.
-- Sätt tidsgränser för AI-anrop.
-- Övervaka resursanvändning och antal AI-anrop.
 
 ### 7. System Prompt Leakage
 
@@ -93,25 +104,26 @@ FinanceSupportAI använder i nuvarande MVP inte någon vektordatabas eller embed
 - Validera och kvalitetssäkra dokument innan de indexeras.
 - Separera olika kunders eller behörighetsnivåers data.
 
-### 9. Supply Chain
+### 9. Misinformation
 
-FinanceSupportAI använder externa paket och komponenter, exempelvis OpenAI SDK, n8n och Ollama. Sårbarheter eller manipulerade beroenden i dessa komponenter kan påverka lösningens säkerhet.
+En språkmodell kan generera svar som låter trovärdiga men som innehåller felaktig information. Inom finans kan detta få större konsekvenser eftersom kunder kan fatta ekonomiska beslut baserat på svaret.
 
-Åtgärder:
-- Använd välkända och betrodda paketkällor.
-- Håll NuGet-paket, n8n och Ollama uppdaterade.
-- Granska beroenden och versionsändringar.
-- Undvik onödiga tredjepartsberoenden.
-- Lagra aldrig API-nycklar direkt i källkoden.
-
-### 10. Data and Model Poisoning
-
-En AI-lösning kan påverkas om träningsdata, kunskapsunderlag eller annan information som modellen använder manipuleras. Det kan leda till felaktiga eller avsiktligt missvisande svar.
-
-I FinanceSupportAI tränas ingen egen AI-modell. Däremot använder lösningen ett FAQ-underlag som måste vara korrekt och pålitligt. Om detta underlag manipuleras kan AI:n formulera svar baserade på felaktig information.
+FinanceSupportAI minskar risken genom att först söka efter relevant information i KnowledgeService. AI-modellen används därefter för att formulera svaret utifrån det hittade underlaget. Om relevant information saknas eskaleras frågan till kundservice.
 
 Åtgärder:
-- Begränsa vilka personer och system som får ändra kunskapsunderlaget.
-- Granska och validera information innan den används av AI:n.
-- Versionshantera förändringar i kunskapsbasen.
-- Använd endast betrodda modeller och datakällor.
+- Begränsa AI-svar till verifierat underlag.
+- Låt inte modellen hitta på saknade fakta.
+- Eskalera frågor när tillräcklig information saknas.
+- Använd mänsklig granskning för viktiga ekonomiska frågor.
+
+### 10. Unbounded Consumption
+
+AI-tjänster kan förbruka stora mängder resurser om användare kan skicka obegränsat antal frågor eller mycket stora inmatningar. Det kan leda till höga kostnader, långsamma svar eller överbelastning av systemet.
+
+I FinanceSupportAI är detta relevant både för AI-anrop i API:t och den lokala Ollama-modellen som används i n8n-automationen.
+
+Åtgärder:
+- Begränsa hur många förfrågningar en användare kan göra under en viss tidsperiod.
+- Begränsa maximal längd på användarens frågor.
+- Sätt tidsgränser för AI-anrop.
+- Övervaka resursanvändning och antal AI-anrop.
